@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projet Cold Chain</title>
+<style>
+:root{--navy:#0f1f4d;--ink:#10224f;--mute:#5b6b8c;--red:#e5233a;--blue:#1e6bff;--line:#e3e9f5}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;color:var(--ink);background:#eef3fc;display:flex;min-height:100vh}
+.side{width:200px;background:linear-gradient(180deg,#0f1f4d,#16327a);color:#fff;margin:12px;border-radius:24px;padding:22px 10px;display:flex;flex-direction:column;flex-shrink:0}
+.logo{text-align:center;margin-bottom:26px}
+.logo .ic{font-size:44px;line-height:1}
+.logo b{display:block;font-size:20px;margin-top:6px}
+.logo span{font-size:13px;color:#aebbe0}
+.side a{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;color:#fff;text-decoration:none;margin:3px 4px;font-size:15px}
+.side a.on{background:#1e6bff}
+.side .foot{margin-top:auto;text-align:center;font-style:italic;font-size:13px;color:#c9d4f2;padding:10px}
+main{flex:1;padding:22px 26px;min-width:0}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:32px}
+header p{margin:4px 0 0;color:var(--mute)}
+.pill{display:flex;align-items:center;gap:8px;background:#fff;border-radius:30px;padding:10px 18px;box-shadow:0 2px 8px #1e3a8a14;font-size:14px}
+.dot{width:12px;height:12px;border-radius:50%;background:#16a34a}
+.dot.off{background:#dc2626}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:20px 0}
+.card{border-radius:20px;padding:20px;display:flex;gap:16px;align-items:center;box-shadow:0 3px 12px #1e3a8a14}
+.c1{background:linear-gradient(135deg,#ffe7ec,#ffd3dc)}
+.c2{background:linear-gradient(135deg,#e3efff,#cfe2ff)}
+.c3{background:linear-gradient(135deg,#efe6ff,#e0d2ff)}
+.bubble{width:68px;height:68px;border-radius:50%;background:#fff8;display:grid;place-items:center;font-size:32px;flex-shrink:0}
+.card h3{margin:0 0 4px;font-size:16px;font-weight:600}
+.big{font-size:40px;font-weight:800;line-height:1.1}
+.delta{font-size:13px;color:var(--mute);margin-top:6px}
+.up{color:#16a34a;font-weight:600}.down{color:#dc2626;font-weight:600}
+.panel{background:#fff;border-radius:22px;padding:20px 24px;box-shadow:0 3px 12px #1e3a8a10}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.panel h2{margin:0;font-size:20px}
+.tabs button{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 18px;border-radius:20px;margin-left:8px;font-size:14px;cursor:pointer}
+.tabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.legend{text-align:center;font-size:14px;margin:6px 0}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px 0 14px}
+canvas{width:100%;height:300px;display:block}
+.bottom{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-top:18px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}
+th{background:#eef3fc;padding:10px;font-weight:600}
+td{padding:11px 10px;text-align:center;border-bottom:1px solid var(--line)}
+.ok{background:linear-gradient(135deg,#e6f9ee,#d3f3e1);border-radius:20px;padding:18px;display:flex;gap:14px;align-items:center}
+.ok.alert{background:linear-gradient(135deg,#ffe7e7,#ffd0d0)}
+.ok .bubble{background:#16a34a;color:#fff;width:54px;height:54px;font-size:26px}
+.ok.alert .bubble{background:#dc2626}
+.ok h3{margin:0 0 4px;font-size:20px}.ok p{margin:0;font-size:14px;color:var(--mute)}
+.info{padding:14px 6px}.info h4{margin:0 0 10px;font-size:17px}
+.info div{margin:10px 0;font-size:14px;color:var(--mute)}
+@media(max-width:900px){body{flex-direction:column}.side{width:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px}
+.logo{margin:0 10px 0 0}.logo span,.side .foot{display:none}.cards,.bottom{grid-template-columns:1fr}.tabs button{margin:4px 4px 0 0}}
+</style>
+</head>
+<body>
+<nav class="side">
+  <div class="logo"><div class="ic">❄️</div><b>Cold Chain</b><span>Smart Monitoring</span></div>
+  <a class="on" href="#">🏠 Dashboard</a>
+  <a href="#histo">🕘 Historique</a>
+  <a href="#">⚙️ Paramètres</a>
+  <a href="#">ℹ️ À propos</a>
+  <div class="foot">Gardons la chaîne<br>du froid, ensemble ❄️</div>
+</nav>
+<main>
+  <header>
+    <div><h1>Projet Cold Chain</h1><p>Suivi en temps réel de la température et de l'humidité</p></div>
+    <div class="pill"><span class="dot" id="dot"></span><span id="conn">Capteur connecté</span></div>
+  </header>
+
+  <section class="cards">
+    <div class="card c1"><div class="bubble">🌡️</div><div><h3>Température actuelle</h3>
+      <div class="big"><span id="t">--</span> °C</div><div class="delta" id="dt">--</div></div></div>
+    <div class="card c2"><div class="bubble">💧</div><div><h3>Humidité actuelle</h3>
+      <div class="big"><span id="h">--</span> %</div><div class="delta" id="dh">--</div></div></div>
+    <div class="card c3"><div class="bubble">🕒</div><div><h3>Dernière mesure</h3>
+      <div class="big" style="font-size:32px" id="ago">--</div><div class="delta" id="when">--</div></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="row"><h2>📊 Évolution des mesures</h2>
+      <div class="tabs" id="tabs"><button data-h="24" class="on">24h</button><button data-h="168">7 jours</button><button data-h="720">30 jours</button></div></div>
+    <div class="legend"><i style="background:var(--red)"></i>Température (°C)<i style="background:var(--blue)"></i>Humidité (%)</div>
+    <canvas id="cv"></canvas>
+  </section>
+
+  <section class="bottom" id="histo">
+    <div class="panel"><h2>🕘 Historique des mesures</h2>
+      <table><thead><tr><th>#</th><th>Date et heure</th><th>Température (°C)</th><th>Humidité (%)</th></tr></thead>
+      <tbody id="rows"></tbody></table></div>
+    <div class="panel" style="padding:14px">
+      <div class="ok" id="okbox"><div class="bubble" id="okic">✓</div><div><h3 id="okt">Tout fonctionne !</h3><p id="okp">Le capteur est actif et transmet des données en temps réel.</p></div></div>
+      <div class="info"><h4>Informations</h4>
+        <div>⏱️ Prochaine mise à jour : dans quelques secondes</div>
+        <div>🌡️ Seuil d'alerte : au-dessus de 25 °C</div>
+        <div>📈 Mesures reçues : <b id="count">0</b></div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+var SEUIL = 25, hours = 24, all = [], lastDate = null;
+
+function pad(n){ return String(n).padStart(2,'0'); }
+function hm(d){ return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+function full(d){ return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()); }
+function delta(el, diff, unit){
+  var cls = diff > 0 ? 'up' : (diff < 0 ? 'down' : 'up');
+  var arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '→');
+  el.innerHTML = '<span class="'+cls+'">'+arrow+' '+(diff>0?'+':'')+diff.toFixed(1)+' '+unit+'</span> vs dernière mesure';
+}
+
+function draw(){
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var W = cv.width = cv.clientWidth, H = cv.height = 300;
+  ctx.clearRect(0,0,W,H);
+  var from = Date.now() - hours*3600*1000;
+  var d = all.filter(function(x){ return x.d.getTime() >= from; });
+  if(d.length > 400){ var step = Math.ceil(d.length/400); d = d.filter(function(_,i){ return i % step === 0; }); }
+  ctx.font = '13px Segoe UI, Arial';
+  if(d.length < 2){ ctx.fillStyle = '#5b6b8c'; ctx.fillText('En attente de mesures...', W/2-70, H/2); return; }
+  var L = 48, R = 48, T = 12, B = 30;
+  var ts = d.map(function(x){return x.t;}), hs = d.map(function(x){return x.h;});
+  var tmin = Math.floor(Math.min.apply(null,ts))-1, tmax = Math.ceil(Math.max.apply(null,ts))+1;
+  var hmin = Math.floor(Math.min.apply(null,hs))-2, hmax = Math.ceil(Math.max.apply(null,hs))+2;
+  var t0 = d[0].d.getTime(), t1 = d[d.length-1].d.getTime(); if(t1===t0) t1 = t0+1;
+  function X(i){ return L + (d[i].d.getTime()-t0)/(t1-t0)*(W-L-R); }
+  function YT(v){ return T + (tmax-v)/(tmax-tmin)*(H-T-B); }
+  function YH(v){ return T + (hmax-v)/(hmax-hmin)*(H-T-B); }
+  for(var k=0;k<=4;k++){
+    var y = T + k*(H-T-B)/4;
+    ctx.strokeStyle='#e3e9f5'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke();
+    ctx.fillStyle='#e5233a'; ctx.textAlign='right'; ctx.fillText((tmax-k*(tmax-tmin)/4).toFixed(1), L-8, y+4);
+    ctx.fillStyle='#1e6bff'; ctx.textAlign='left'; ctx.fillText((hmax-k*(hmax-hmin)/4).toFixed(0), W-R+8, y+4);
+  }
+  ctx.fillStyle='#10224f'; ctx.textAlign='center';
+  for(var j=0;j<=4;j++){ var tt = new Date(t0 + j*(t1-t0)/4); ctx.fillText(hm(tt), L + j*(W-L-R)/4, H-8); }
+  function line(vals, Y, color, fill){
+    ctx.beginPath();
+    vals.forEach(function(v,i){ if(i) ctx.lineTo(X(i),Y(v)); else ctx.moveTo(X(i),Y(v)); });
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+    ctx.lineTo(X(vals.length-1),H-B); ctx.lineTo(X(0),H-B); ctx.closePath();
+    ctx.fillStyle=fill; ctx.fill();
+    var n = vals.length-1; ctx.beginPath(); ctx.arc(X(n),Y(vals[n]),4,0,6.3); ctx.fillStyle=color; ctx.fill();
+  }
+  line(hs, YH, '#1e6bff', 'rgba(30,107,255,.10)');
+  line(ts, YT, '#e5233a', 'rgba(229,35,58,.10)');
+  if(SEUIL > tmin && SEUIL < tmax){
+    ctx.setLineDash([5,5]); ctx.strokeStyle='#e5233a88'; ctx.beginPath(); ctx.moveTo(L,YT(SEUIL)); ctx.lineTo(W-R,YT(SEUIL)); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+
+function tick(){
+  if(!lastDate) return;
+  var s = Math.round((Date.now()-lastDate.getTime())/1000);
+  document.getElementById('ago').textContent = s < 60 ? 'il y a ' + s + ' s' : 'il y a ' + Math.floor(s/60) + ' min';
+  var actif = s < 40;
+  document.getElementById('dot').className = 'dot' + (actif ? '' : ' off');
+  document.getElementById('conn').textContent = actif ? 'Capteur connecté' : 'Capteur déconnecté';
+}
+
+async function maj(){
+  try{
+    var r = await fetch('/list/'); var json = await r.json();
+    all = json.data.map(function(x){ return {id:x.id, t:x.temperature, h:x.humidity, d:new Date(x.date)}; });
+    if(!all.length) return;
+    var last = all[all.length-1], prev = all.length > 1 ? all[all.length-2] : last;
+    lastDate = last.d;
+    document.getElementById('t').textContent = last.t.toFixed(1);
+    document.getElementById('h').textContent = last.h.toFixed(1);
+    delta(document.getElementById('dt'), last.t-prev.t, '°C');
+    delta(document.getElementById('dh'), last.h-prev.h, '%');
+    document.getElementById('when').textContent = '📅 ' + full(last.d);
+    document.getElementById('count').textContent = all.length;
+    var box = document.getElementById('okbox'), hot = last.t > SEUIL;
+    box.className = 'ok' + (hot ? ' alert' : '');
+    document.getElementById('okic').textContent = hot ? '!' : '✓';
+    document.getElementById('okt').textContent = hot ? 'Alerte température !' : 'Tout fonctionne !';
+    document.getElementById('okp').textContent = hot ? 'La température dépasse ' + SEUIL + ' °C : un email et un message Telegram sont envoyés.' : 'Le capteur est actif et transmet des données en temps réel.';
+    document.getElementById('rows').innerHTML = all.slice(-5).reverse().map(function(x){
+      return '<tr><td>'+x.id+'</td><td>'+full(x.d)+'</td><td>'+x.t.toFixed(1)+'</td><td>'+x.h.toFixed(1)+'</td></tr>';
+    }).join('');
+    draw(); tick();
+  }catch(e){
+    document.getElementById('dot').className = 'dot off';
+    document.getElementById('conn').textContent = 'API injoignable';
+  }
+}
+
+document.getElementById('tabs').addEventListener('click', function(e){
+  if(e.target.tagName !== 'BUTTON') return;
+  hours = +e.target.dataset.h;
+  this.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === e.target); });
+  draw();
+});
+window.addEventListener('resize', draw);
+setInterval(maj, 5000); setInterval(tick, 1000); maj();
+</script>
+</body>
+</html>
